@@ -1,0 +1,5 @@
+Django==1.9.5
+PyCrypto
+pytest
+pytest-django
+pytest-pep8

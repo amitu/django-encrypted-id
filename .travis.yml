@@ -1,0 +1,25 @@
+sudo: false
+language: python
+python:
+    - 2.7
+    - 3.5
+
+os:
+    - linux
+
+
+before_install: pip install --upgrade tox pip virtualenv wheel setuptools --quiet
+before_script: pyclean --verbose .
+script: tox
+
+notifications:
+    email:
+        recipients: upadhyay@gmail.com
+        template:
+          - "%{repository}@%{branch}: %{message}(%{build_url})"
+          - "Build: %{build_number},SHA: %{commit},Committer: %{author},Diff: %{compare_url}"
+        on_success: always
+        on_failure: always
+
+
+cache: apt
