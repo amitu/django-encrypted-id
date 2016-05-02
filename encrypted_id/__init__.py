@@ -4,6 +4,11 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+try:
+    basestring
+except NameError:
+    basestring = str
+
 from Crypto.Cipher import AES
 
 import base64
@@ -42,6 +47,9 @@ def encode(the_id):
 
 
 def decode(e):
+    if isinstance(e, basestring):
+        e = bytes(e.encode("ascii"))
+
     try:
         e = base64.urlsafe_b64decode(e.replace(b".", b"="))
     except TypeError:
