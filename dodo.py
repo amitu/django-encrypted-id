@@ -16,5 +16,6 @@ def task_aliases():
 
         yield {
             "basename": name,
-            "actions": [command]
+            "actions": [command],
+            'verbosity': 2,
         }
