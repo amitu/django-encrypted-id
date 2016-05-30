@@ -52,7 +52,7 @@ def decode(e):
 
     try:
         e = base64.urlsafe_b64decode(e.replace(b".", b"="))
-    except TypeError:
+    except (TypeError, AttributeError):
         raise ValueError("Failed to decrypt, invalid input.")
 
     for skey in getattr(settings, "SECRET_KEYS", [settings.SECRET_KEY]):
