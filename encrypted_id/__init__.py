@@ -47,7 +47,7 @@ def encode(the_id):
 
 
 def decode(e):
-    if isinstance(e, basestring):
+    if isinstance(e, str):
         e = bytes(e.encode("ascii"))
 
     try:
@@ -55,16 +55,17 @@ def decode(e):
     except (TypeError, AttributeError):
         raise ValueError("Failed to decrypt, invalid input.")
 
-    for skey in getattr(settings, "SECRET_KEYS", [settings.SECRET_KEY]):
-        cypher = AES.new(skey[:24], AES.MODE_CBC, skey[-16:])
-        msg = cypher.decrypt(e)
+    cypher = AES.new(
+        encrypted_id_setting['SECRET_KEYS'][:24], AES.MODE_CBC,
+        encrypted_id_setting['SECRET_KEYS'][-16:]
+    )
 
-        crc, the_id = struct.unpack("<IQxxxx", msg)
+    message = cypher.decrypt(e)
+    crc, the_id = struct.unpack("<IQxxxx", message)
 
-        if crc != binascii.crc32(bytes(the_id)) & 0xffffffff:
-            continue
-
+    if crc == binascii.crc32(bytes(the_id)) & 0xffffffff:
         return the_id
+
     raise ValueError("Failed to decrypt, CRC never matched.")
 
 
