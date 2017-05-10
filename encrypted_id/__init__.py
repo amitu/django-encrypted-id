@@ -43,7 +43,7 @@ def encode(the_id):
         settings.SECRET_KEY[-16:]
     )
 
-    return base64.urlsafe_b64encode(cypher.encrypt(message)).replace(b"=", b".")
+    return base64.urlsafe_b64encode(cypher.encrypt(message)).replace(b"=", b"")
 
 
 def decode(e):
@@ -51,7 +51,8 @@ def decode(e):
         e = bytes(e.encode("ascii"))
 
     try:
-        e = base64.urlsafe_b64decode(e.replace(b".", b"="))
+        padding = (3 - len(e) % 3) * b"="
+        e = base64.urlsafe_b64decode(e + padding)
     except (TypeError, AttributeError):
         raise ValueError("Failed to decrypt, invalid input.")
 
