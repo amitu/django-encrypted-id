@@ -17,11 +17,22 @@ class EncryptedIDManager(models.Manager):
         return get_object_or_404(self.model, *args, **kw)
 
 
+class EncryptedIDQuerySet(models.QuerySet):
+    def filter(self, *args, **kw):
+        ekey = kw.pop('ekey', None)
+        if ekey:
+            try:
+                kw['id'] = decode(ekey)
+            except ValueError:
+                return self.none()
+        return super(EncryptedIDQuerySet, self).filter(*args, **kw)
+
+
 class EncryptedIDModel(models.Model):
     class Meta:
         abstract = True
 
-    objects = EncryptedIDManager()
+    objects = EncryptedIDManager.from_queryset(EncryptedIDQuerySet)()
 
     @property
     def ekey(self):
