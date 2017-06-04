@@ -19,11 +19,12 @@ class EncryptedIDManager(models.Manager):
 
 class EncryptedIDQuerySet(models.QuerySet):
     def filter(self, *args, **kw):
-        ekey = kw.pop('ekey', None)
-        if ekey:
+        if 'ekey' in kw:
+            ekey = kw.pop('ekey')
             try:
+                assert ekey is not None
                 kw['id'] = decode(ekey)
-            except ValueError:
+            except (AssertionError, ValueError):
                 return self.none()
         return super(EncryptedIDQuerySet, self).filter(*args, **kw)
 

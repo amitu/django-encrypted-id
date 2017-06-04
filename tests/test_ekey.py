@@ -24,3 +24,6 @@ def test_allow_none_ekey(db):
 
     with pytest.raises(Http404):
         get_object_or_404(Foo, None)
+
+    with pytest.raises(Foo.DoesNotExist):
+        Foo.objects.get(ekey=None)
