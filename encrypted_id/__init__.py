@@ -30,6 +30,11 @@ __source__ = "https://github.com/amitu/django-encrypted-id"
 __docformat__ = "html"
 
 
+class EncryptedIDDecodeError(Exception):
+    def __init__(self, msg="Failed to decrypt, invalid input."):
+        super(EncryptedIDDecodeError, self).__init__(msg)
+
+
 def encode(the_id):
     assert 0 <= the_id < 2 ** 64
 
@@ -53,26 +58,35 @@ def decode(e):
     try:
         padding = (3 - len(e) % 3) * b"="
         e = base64.urlsafe_b64decode(e + padding)
-    except (TypeError, AttributeError):
-        raise ValueError("Failed to decrypt, invalid input.")
+    except (TypeError, AttributeError, binascii.Error):
+        raise EncryptedIDDecodeError()
 
     for skey in getattr(settings, "SECRET_KEYS", [settings.SECRET_KEY]):
         cypher = AES.new(skey[:24], AES.MODE_CBC, skey[-16:])
-        msg = cypher.decrypt(e)
+        try:
+            msg = cypher.decrypt(e)
+        except ValueError:
+            raise EncryptedIDDecodeError()
 
-        crc, the_id = struct.unpack("<IQxxxx", msg)
+        try:
+            crc, the_id = struct.unpack("<IQxxxx", msg)
+        except struct.error:
+            raise EncryptedIDDecodeError()
 
-        if crc != binascii.crc32(bytes(the_id)) & 0xffffffff:
-            continue
+        try:
+            if crc != binascii.crc32(bytes(the_id)) & 0xffffffff:
+                continue
+        except MemoryError:
+            raise EncryptedIDDecodeError()
 
         return the_id
-    raise ValueError("Failed to decrypt, CRC never matched.")
+    raise EncryptedIDDecodeError("Failed to decrypt, CRC never matched.")
 
 
 def get_object_or_404(m, ekey, *arg, **kw):
     try:
         pk = decode(ekey)
-    except ValueError:
+    except EncryptedIDDecodeError:
         raise Http404
 
     return go4(m, id=pk, *arg, **kw)

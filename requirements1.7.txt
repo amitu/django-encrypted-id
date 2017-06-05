@@ -1,5 +1,0 @@
-Django==1.7.11
-PyCrypto
-pytest
-pytest-django
-pytest-pep8

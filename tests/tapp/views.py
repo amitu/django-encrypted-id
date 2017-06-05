@@ -1,3 +1,9 @@
-from django.shortcuts import render
+from django.views.generic import DetailView
 
-# Create your views here.
+from tapp.models import Foo
+
+
+class FooView(DetailView):
+    model = Foo
+    slug_field = 'ekey'
+    template_name = 'admin/base.html'
