@@ -13,3 +13,7 @@ class Foo2Manager(EncryptedIDManager):
 
 class Foo2(EncryptedIDModel):
     text = models.TextField()
+
+
+class Bar(EncryptedIDModel):
+    foo = models.ForeignKey(Foo)
