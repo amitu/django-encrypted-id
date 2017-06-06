@@ -20,13 +20,17 @@ class EncryptedIDManager(models.Manager):
 
 class EncryptedIDQuerySet(models.QuerySet):
     def filter(self, *args, **kw):
-        if 'ekey' in kw:
-            ekey = kw.pop('ekey')
-            try:
-                assert ekey is not None
-                kw['id'] = decode(ekey)
-            except (AssertionError, EncryptedIDDecodeError):
-                return self.none()
+        for field, value in kw.copy().items():
+            field_split = field.rsplit('__', 1)
+            base, suffix = field_split[:-1], field_split[-1]
+            if suffix == 'ekey':
+                del kw[field]
+                new_field = '__'.join(base + ['id'])
+                try:
+                    assert value is not None
+                    kw[new_field] = decode(value)
+                except (AssertionError, EncryptedIDDecodeError):
+                    return self.none()
         return super(EncryptedIDQuerySet, self).filter(*args, **kw)
 
 

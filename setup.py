@@ -52,7 +52,7 @@ setup(
 
 
     install_requires=[
-        "Django>=1.5", "PyCrypto",
+        "Django>=1.8", "PyCrypto",
     ],
 
 
