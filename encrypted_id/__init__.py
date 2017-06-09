@@ -48,7 +48,8 @@ def encode(the_id):
         settings.SECRET_KEY[-16:]
     )
 
-    return base64.urlsafe_b64encode(cypher.encrypt(message)).replace(b"=", b"")
+    eid = base64.urlsafe_b64encode(cypher.encrypt(message)).replace(b"=", b"")
+    return eid.decode('utf-8')
 
 
 def decode(e):
