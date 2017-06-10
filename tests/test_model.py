@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from tapp.models import Foo, Foo2
+from tapp.models import Bar, Foo, Foo2
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.http import Http404
 import pytest
@@ -35,3 +35,23 @@ def test_model(db):
 
     with pytest.raises(Http404):
         get_object_or_404(Foo, ekey="123123")
+
+
+def test_sub_key(db):
+    assert db is db
+
+    foo = Foo.objects.create(text='hello')
+
+    try:
+        foo2 = Foo2.objects.get(pk=foo.pk)
+    except Foo2.DoesNotExist:
+        foo2 = Foo2.objects.create(pk=foo.pk, text='hello')
+
+    try:
+        bar = Bar.objects.get(pk=foo.pk)
+    except Bar.DoesNotExist:
+        bar = Bar.objects.create(pk=foo.pk, text='hello')
+
+    assert foo.pk == foo2.pk == bar.pk
+    assert foo.ekey == foo2.ekey
+    assert foo.ekey != bar.ekey

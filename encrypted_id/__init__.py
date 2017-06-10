@@ -13,6 +13,7 @@ from Crypto.Cipher import AES
 
 import base64
 import binascii
+import hashlib
 import struct
 
 from django.conf import settings
@@ -35,7 +36,7 @@ class EncryptedIDDecodeError(Exception):
         super(EncryptedIDDecodeError, self).__init__(msg)
 
 
-def encode(the_id):
+def encode(the_id, sub_key):
     assert 0 <= the_id < 2 ** 64
 
     crc = binascii.crc32(bytes(the_id)) & 0xffffffff
@@ -43,15 +44,14 @@ def encode(the_id):
     message = struct.pack(b"<IQxxxx", crc, the_id)
     assert len(message) == 16
 
-    cypher = AES.new(
-        settings.SECRET_KEY[:32], AES.MODE_CBC,
-        settings.SECRET_KEY[-16:]
-    )
+    key = settings.SECRET_KEY
+    iv = hashlib.sha256((key + sub_key).encode('ascii')).digest()[:16]
+    cypher = AES.new(key[:32], AES.MODE_CBC, iv)
 
     return base64.urlsafe_b64encode(cypher.encrypt(message)).replace(b"=", b"")
 
 
-def decode(e):
+def decode(e, sub_key):
     if isinstance(e, basestring):
         e = bytes(e.encode("ascii"))
 
@@ -61,31 +61,39 @@ def decode(e):
     except (TypeError, AttributeError, binascii.Error):
         raise EncryptedIDDecodeError()
 
-    for skey in getattr(settings, "SECRET_KEYS", [settings.SECRET_KEY]):
-        cypher = AES.new(skey[:32], AES.MODE_CBC, skey[-16:])
+    for key in getattr(settings, "SECRET_KEYS", [settings.SECRET_KEY]):
+        iv = hashlib.sha256((key + sub_key).encode('ascii')).digest()[:16]
+        cypher = AES.new(key[:32], AES.MODE_CBC, iv)
         try:
             msg = cypher.decrypt(e)
         except ValueError:
             raise EncryptedIDDecodeError()
 
         try:
-            crc, the_id = struct.unpack("<IQxxxx", msg)
+            crc, the_id = struct.unpack(b"<IQxxxx", msg)
         except struct.error:
             raise EncryptedIDDecodeError()
 
         try:
             if crc != binascii.crc32(bytes(the_id)) & 0xffffffff:
                 continue
-        except MemoryError:
+        except (MemoryError, OverflowError):
             raise EncryptedIDDecodeError()
 
         return the_id
     raise EncryptedIDDecodeError("Failed to decrypt, CRC never matched.")
 
 
+def get_model_sub_key(m):
+    try:
+        return m._meta.ek_key
+    except AttributeError:
+        return m._meta.db_table
+
+
 def get_object_or_404(m, ekey, *arg, **kw):
     try:
-        pk = decode(ekey)
+        pk = decode(ekey, get_model_sub_key(m))
     except EncryptedIDDecodeError:
         raise Http404
 
@@ -94,4 +102,4 @@ def get_object_or_404(m, ekey, *arg, **kw):
 
 def ekey(instance):
     assert isinstance(instance, Model)
-    return encode(instance.id)
+    return encode(instance.id, get_model_sub_key(instance))
