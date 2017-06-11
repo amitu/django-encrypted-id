@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from tapp.models import Foo, Foo2, Bar
+from tapp.models import Foo, Foo2
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.http import Http404
 import pytest
@@ -19,11 +19,6 @@ def test_model(db):
     assert foo == Foo.objects.get_by_ekey_or_404(foo.ekey)
     assert foo == Foo.objects.get(ekey=foo.ekey)
     assert foo == Foo.objects.filter(ekey=foo.ekey).get()
-
-    bar = Bar.objects.create(foo=foo)
-    assert bar.ekey
-    assert bar == Bar.objects.get(foo__ekey=foo.ekey)
-    assert bar == Bar.objects.filter(foo__ekey=foo.ekey).get()
 
     foo = Foo2.objects.create(text="hello")
     assert foo.ekey
@@ -40,6 +35,3 @@ def test_model(db):
 
     with pytest.raises(Http404):
         get_object_or_404(Foo, ekey="123123")
-
-    with pytest.raises(Http404):
-        get_object_or_404(Bar, foo__ekey="123123")
