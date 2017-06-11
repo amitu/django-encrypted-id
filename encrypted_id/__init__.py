@@ -44,7 +44,7 @@ def encode(the_id):
     assert len(message) == 16
 
     cypher = AES.new(
-        settings.SECRET_KEY[:24], AES.MODE_CBC,
+        settings.SECRET_KEY[:32], AES.MODE_CBC,
         settings.SECRET_KEY[-16:]
     )
 
@@ -62,7 +62,7 @@ def decode(e):
         raise EncryptedIDDecodeError()
 
     for skey in getattr(settings, "SECRET_KEYS", [settings.SECRET_KEY]):
-        cypher = AES.new(skey[:24], AES.MODE_CBC, skey[-16:])
+        cypher = AES.new(skey[:32], AES.MODE_CBC, skey[-16:])
         try:
             msg = cypher.decrypt(e)
         except ValueError:
