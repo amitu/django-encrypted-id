@@ -1,6 +1,13 @@
 django-encrypted-id
 ===================
 
+**Note**: Version 0.2.0 is a breaking change from versions
+`0.1.x <https://github.com/amitu/django-encrypted-id/tree/v0.1>`_.
+If you've been using *ekey* in permalinks, then it is recommended for you to
+not upgrade to 0.2.x.
+
+----
+
 Consider this example model:
 
 .. code-block:: python

@@ -22,7 +22,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404 as go4
 
 
-__version__ = "0.1.3"
+__version__ = "0.2.0"
 __license__ = "BSD"
 __author__ = "Amit Upadhyay"
 __email__ = "upadhyay@gmail.com"
