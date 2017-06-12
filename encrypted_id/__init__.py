@@ -48,7 +48,8 @@ def encode(the_id, sub_key):
     iv = hashlib.sha256((key + sub_key).encode('ascii')).digest()[:16]
     cypher = AES.new(key[:32], AES.MODE_CBC, iv)
 
-    return base64.urlsafe_b64encode(cypher.encrypt(message)).replace(b"=", b"")
+    eid = base64.urlsafe_b64encode(cypher.encrypt(message)).replace(b"=", b"")
+    return eid.decode('utf-8')
 
 
 def decode(e, sub_key):
