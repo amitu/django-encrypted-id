@@ -1,8 +1,8 @@
+import uuid
+
 from encrypted_id import encode, decode
 
 
 def test_encode():
-    assert decode(encode(10)) == 10
-    # e = encode(20)
-    # print(e)
-    # assert decode(u'IGqVjhm4x7ntEUuyA-sFTg..') == 20
+    sub_key = uuid.uuid4().hex
+    assert decode(encode(10, sub_key), sub_key) == 10

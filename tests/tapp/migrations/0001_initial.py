@@ -30,15 +30,4 @@ class Migration(migrations.Migration):
                 'abstract': False,
             },
         ),
-        migrations.CreateModel(
-            name='Bar',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False,
-                                        auto_created=True, primary_key=True)),
-                ('foo', models.ForeignKey(on_delete=models.deletion.CASCADE, to='tapp.Foo')),
-            ],
-            options={
-                'abstract': False,
-            },
-        ),
     ]

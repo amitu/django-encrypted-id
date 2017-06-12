@@ -8,7 +8,7 @@ import pytest
 from django.http import Http404
 
 from encrypted_id import ekey, get_object_or_404
-from tapp.models import Foo, Bar
+from tapp.models import Foo
 
 
 def test_ekey(db):
@@ -27,6 +27,3 @@ def test_allow_none_ekey(db):
 
     with pytest.raises(Foo.DoesNotExist):
         Foo.objects.get(ekey=None)
-
-    with pytest.raises(Bar.DoesNotExist):
-        Bar.objects.get(foo__ekey=None)

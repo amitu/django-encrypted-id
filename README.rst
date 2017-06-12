@@ -27,7 +27,7 @@ model instances. This is how they will look like:
     Out[3]: 1
 
     In [4]: f.ekey
-    Out[4]: 'bxuZXwM4NdgGauVWR-ueUA..'
+    Out[4]: 'bxuZXwM4NdgGauVWR-ueUA'
     You can do reverse lookup:
 
     In [5]: from encrypted_id import decode
@@ -45,7 +45,7 @@ the ``ekey()`` function from ``encrypted_id`` package:
     In [8]: from django.contrib.auth.models import User
 
     In [9]: ekey(User.objects.get(pk=1))
-    Out[9]: 'bxuZXwM4NdgGauVWR-ueUA..'
+    Out[9]: 'bxuZXwM4NdgGauVWR-ueUA'
 
 
 To do the reverse lookup, you have two helpers available. First is provided by
@@ -76,7 +76,7 @@ You your manager is not inheriting from ``EncryptedIDManager``, you can use:
     In [12]: e = ekey(User.objects.first())
 
     In [13]: e
-    Out[13]: 'bxuZXwM4NdgGauVWR-ueUA..'
+    Out[13]: 'bxuZXwM4NdgGauVWR-ueUA'
 
     In [14]: get_object_or_404(User, e)
     Out[14]: <User: amitu>
@@ -91,7 +91,7 @@ If you are curios, the regex used to match the generated ids is:
 
 .. code-block:: python
 
-    "[0-9a-zA-Z-_]+.{0,2}"
+    "[0-9a-zA-Z-_]+"
 
 
 If you are using `smarturls <http://amitu.com/smarturls/>`_, you can use URL
@@ -109,8 +109,10 @@ make URLs non guessable, encrypted id is a superior approach.
 
 If you are curious about the encryption used: I am using ``AES``, from
 ``pycrypto`` library, and am using ``SECRET_KEY`` for password
-(``SECRET_KEY[:24]``) and ``IV`` (``SECRET_KEY[-16:]``), in the ``AES.CBC``
-mode.
+(``SECRET_KEY[:32]``) and ``IV`` (first 16 characters of hash of ``SECRET_KEY``
+and a *sub_key*), in the ``AES.CBC`` mode. The *sub_key* is taken from the
+model's ``Meta`` attribute ``ek_key``, or simply ``db_table`` if ``ek_key`` is
+not set.
 
 In general it is recommended not to have static ``IV``, but ``CBC`` offsets
 some of the problems with having static IV.  What is the the issue with static
