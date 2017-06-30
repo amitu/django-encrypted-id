@@ -24,3 +24,11 @@ class Foo2(EncryptedIDModel):
 
 class Bar(EncryptedIDModel):
     text = models.TextField()
+
+
+class Baz(models.Model):
+    foo = models.ForeignKey(Foo)
+
+
+class Baz2(EncryptedIDModel):
+    foo = models.ForeignKey(Foo)
