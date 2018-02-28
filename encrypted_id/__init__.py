@@ -39,7 +39,7 @@ class EncryptedIDDecodeError(Exception):
 def encode(the_id, sub_key):
     assert 0 <= the_id < 2 ** 64
 
-    crc = binascii.crc32(struct.pack("<I", the_id)) & 0xffffffff
+    crc = binascii.crc32(struct.pack("<Q", the_id)) & 0xffffffff
 
     message = struct.pack(b"<IQxxxx", crc, the_id)
     assert len(message) == 16
@@ -76,7 +76,7 @@ def decode(e, sub_key):
             raise EncryptedIDDecodeError()
 
         try:
-            if crc != binascii.crc32(struct.pack("<I", the_id)) & 0xffffffff:
+            if crc != binascii.crc32(struct.pack("<Q", the_id)) & 0xffffffff:
                 continue
         except (MemoryError, OverflowError):
             raise EncryptedIDDecodeError()
