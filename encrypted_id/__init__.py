@@ -22,7 +22,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404 as go4
 
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __license__ = "BSD"
 __author__ = "Amit Upadhyay"
 __email__ = "upadhyay@gmail.com"
@@ -39,7 +39,7 @@ class EncryptedIDDecodeError(Exception):
 def encode(the_id, sub_key):
     assert 0 <= the_id < 2 ** 64
 
-    crc = binascii.crc32(bytes(the_id)) & 0xffffffff
+    crc = binascii.crc32(str(the_id).encode('utf-8')) & 0xffffffff
 
     message = struct.pack(b"<IQxxxx", crc, the_id)
     assert len(message) == 16
@@ -49,10 +49,47 @@ def encode(the_id, sub_key):
     cypher = AES.new(key[:32], AES.MODE_CBC, iv)
 
     eid = base64.urlsafe_b64encode(cypher.encrypt(message)).replace(b"=", b"")
-    return eid.decode('utf-8')
+    return (b"$" + eid).decode("utf-8")
 
 
 def decode(e, sub_key):
+    if isinstance(e, basestring):
+        e = bytes(e.encode("ascii"))
+
+    if not e.startswith(b"$"):
+        return decode2(e, sub_key)
+    e = e[1:]
+
+    try:
+        padding = (3 - len(e) % 3) * b"="
+        e = base64.urlsafe_b64decode(e + padding)
+    except (TypeError, AttributeError, binascii.Error):
+        raise EncryptedIDDecodeError()
+
+    for key in getattr(settings, "SECRET_KEYS", [settings.SECRET_KEY]):
+        iv = hashlib.sha256((key + sub_key).encode('ascii')).digest()[:16]
+        cypher = AES.new(key[:32], AES.MODE_CBC, iv)
+        try:
+            msg = cypher.decrypt(e)
+        except ValueError:
+            raise EncryptedIDDecodeError()
+
+        try:
+            crc, the_id = struct.unpack(b"<IQxxxx", msg)
+        except struct.error:
+            raise EncryptedIDDecodeError()
+
+        try:
+            if crc != binascii.crc32(str(the_id).encode('utf-8')) & 0xffffffff:
+                continue
+        except (MemoryError, OverflowError):
+            raise EncryptedIDDecodeError()
+
+        return the_id
+    raise EncryptedIDDecodeError("Failed to decrypt, CRC never matched.")
+
+
+def decode2(e, sub_key):
     if isinstance(e, basestring):
         e = bytes(e.encode("ascii"))
 
