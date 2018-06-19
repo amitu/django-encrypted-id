@@ -98,7 +98,7 @@ You your manager is not inheriting from ``EncryptedIDManager``, you can use:
 ``EncryptedIDManager.get_by_ekey_or_404`` take extra keyword argument, that can
 be used to filter if you want.
 
-If you are curios, the regex used to match the generated ids is:
+If you are curious, the regex used to match the generated ids is:
 
 .. code-block:: python
 
