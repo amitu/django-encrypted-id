@@ -48,7 +48,7 @@ def encode(the_id, sub_key):
 
     key = settings.SECRET_KEY
     iv = hashlib.sha256((key + sub_key).encode('ascii')).digest()[:16]
-    cypher = AES.new(key[:32], AES.MODE_CBC, iv)
+    cypher = AES.new(key[:32].encode('utf-8'), AES.MODE_CBC, iv)
 
     eid = base64.urlsafe_b64encode(cypher.encrypt(message)).replace(b"=", b"")
     return eid.decode("utf-8")
@@ -71,7 +71,7 @@ def decode(e, sub_key):
 
     for key in getattr(settings, "SECRET_KEYS", [settings.SECRET_KEY]):
         iv = hashlib.sha256((key + sub_key).encode('ascii')).digest()[:16]
-        cypher = AES.new(key[:32], AES.MODE_CBC, iv)
+        cypher = AES.new(key[:32].encode('utf-8'), AES.MODE_CBC, iv)
         try:
             msg = cypher.decrypt(e)
         except ValueError:
