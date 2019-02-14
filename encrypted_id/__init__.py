@@ -22,7 +22,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404 as go4
 
 
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 __license__ = "BSD"
 __author__ = "Amit Upadhyay"
 __email__ = "upadhyay@gmail.com"
@@ -57,11 +57,14 @@ def encode(the_id, sub_key):
 def decode(e, sub_key):
     if isinstance(e, basestring):
         e = bytes(e.encode("ascii"))
-
-    forced_version = None
-    if e.startswith(b"$"):
-        forced_version = 1
-        e = e[1:]
+    
+    try:
+        forced_version = None
+        if e.startswith(b"$"):
+            forced_version = 1
+            e = e[1:]
+    except AttributeError:
+        raise EncryptedIDDecodeError()
 
     try:
         padding = (3 - len(e) % 3) * b"="
