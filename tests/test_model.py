@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from tapp.models import Bar, Foo, Foo2
+from tapp.models import Bar, Baz, Baz2, Foo, Foo2
 from django.shortcuts import get_list_or_404, get_object_or_404
 from django.http import Http404
 import pytest
@@ -20,12 +20,21 @@ def test_model(db):
     assert foo == Foo.objects.get(ekey=foo.ekey)
     assert foo == Foo.objects.filter(ekey=foo.ekey).get()
 
-    foo = Foo2.objects.create(text="hello")
-    assert foo.ekey
-    assert foo == Foo2.objects.get_by_ekey(foo.ekey)
-    assert foo == Foo2.objects.get_by_ekey_or_404(foo.ekey)
-    assert foo == Foo2.objects.get(ekey=foo.ekey)
-    assert foo == Foo2.objects.filter(ekey=foo.ekey).get()
+    foo2 = Foo2.objects.create(text="hello")
+    assert foo2.ekey
+    assert foo2 == Foo2.objects.get_by_ekey(foo.ekey)
+    assert foo2 == Foo2.objects.get_by_ekey_or_404(foo.ekey)
+    assert foo2 == Foo2.objects.get(ekey=foo.ekey)
+    assert foo2 == Foo2.objects.filter(ekey=foo.ekey).get()
+
+    baz = Baz.objects.create(foo=foo)
+    assert baz == Baz.objects.get(foo__ekey=foo.ekey)
+    assert baz == Baz.objects.filter(foo__ekey=foo.ekey).get()
+
+    baz2 = Baz2.objects.create(foo=foo)
+    assert baz2.ekey
+    assert baz2 == Baz2.objects.get(foo__ekey=foo.ekey)
+    assert baz2 == Baz2.objects.filter(foo__ekey=foo.ekey).get()
 
     with pytest.raises(Http404):
         Foo.objects.get_by_ekey_or_404("123123")
@@ -35,6 +44,12 @@ def test_model(db):
 
     with pytest.raises(Http404):
         get_object_or_404(Foo, ekey="123123")
+
+    with pytest.raises(Http404):
+        get_object_or_404(Baz, foo__ekey="123123")
+
+    with pytest.raises(Http404):
+        get_object_or_404(Baz2, foo__ekey="123123")
 
 
 def test_sub_key(db):
