@@ -119,7 +119,7 @@ and have inferior indexing than integer ids), and if your goal is simply to
 make URLs non guessable, encrypted id is a superior approach.
 
 If you are curious about the encryption used: I am using ``AES``, from
-``pycrypto`` library, and am using ``SECRET_KEY`` for password
+``pycryptodomex`` library, and am using ``SECRET_KEY`` for password
 (``SECRET_KEY[:32]``) and ``IV`` (first 16 characters of hash of ``SECRET_KEY``
 and a *sub_key*), in the ``AES.CBC`` mode. The *sub_key* is taken from the
 model's ``Meta`` attribute ``ek_key``, or simply ``db_table`` if ``ek_key`` is
