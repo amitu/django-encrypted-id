@@ -1,0 +1,5 @@
+Django==2.2.13
+pycryptodomex
+pytest
+pytest-django
+pytest-pep8
