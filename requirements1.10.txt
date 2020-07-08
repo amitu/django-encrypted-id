@@ -1,4 +1,4 @@
-Django==1.10.7
+Django==1.11.28
 pycryptodomex
 pytest
 pytest-django
