@@ -20,7 +20,7 @@ from django.contrib import admin
 from tapp.views import FooView
 
 urlpatterns = [
-    # path('admin/', include(admin.site.urls)),
+    path('admin/', admin.site.urls),
     path('foo/<str:slug>/', FooView.as_view(), name='foo'),
     # surl('/foo/<ekey:slug>/', FooView.as_view(), name='foo'),
 ]
