@@ -65,3 +65,4 @@ target/
 
 # Editors
 .idea/
+/venvpy37/
