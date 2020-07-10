@@ -1,5 +1,0 @@
-Django==1.9.5
-pycryptodomex
-pytest
-pytest-django
-pytest-pep8

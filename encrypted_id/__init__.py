@@ -57,14 +57,14 @@ def encode(the_id, sub_key):
 def decode(e, sub_key):
     if isinstance(e, basestring):
         e = bytes(e.encode("ascii"))
-    
-    try:
-        forced_version = None
-        if e.startswith(b"$"):
-            forced_version = 1
-            e = e[1:]
-    except AttributeError:
-        raise EncryptedIDDecodeError()
+
+    # try:
+    #     forced_version = None
+    #     if e.startswith(b"$"):
+    #         forced_version = 1
+    #         e = e[1:]
+    # except AttributeError:
+    #     raise EncryptedIDDecodeError()
 
     try:
         padding = (3 - len(e) % 3) * b"="
@@ -81,19 +81,16 @@ def decode(e, sub_key):
             raise EncryptedIDDecodeError()
 
         try:
-            crc, the_id, version = struct.unpack(b"<IQI", msg)
+            crc, the_id, _ = struct.unpack(b"<IQI", msg)
         except struct.error:
             raise EncryptedIDDecodeError()
 
-        if forced_version is not None:
-            version = forced_version
+        # if forced_version is not None:
+        #     version = forced_version
 
         try:
-            if version == 0:
-                expected_crc = binascii.crc32(bytes(the_id)) & 0xffffffff
-            else:
-                id_str = str(the_id).encode('utf-8')
-                expected_crc = binascii.crc32(id_str) & 0xffffffff
+            id_str = str(the_id).encode('utf-8')
+            expected_crc = binascii.crc32(id_str) & 0xffffffff
         except (MemoryError, OverflowError):
             raise EncryptedIDDecodeError()
 
