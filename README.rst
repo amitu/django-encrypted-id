@@ -105,13 +105,6 @@ If you are curious, the regex used to match the generated ids is:
     "[0-9a-zA-Z-_]+"
 
 
-If you are using `smarturls <http://amitu.com/smarturls/>`_, you can use URL
-pattern like:
-
-.. code-block:: python
-
-    "/<ekey:foo>/"
-
 
 I recommend this usage of encrypted-id over UUID, as UUIDs have significant
 issues that should be considered (tldr: they take more space on disk and RAM,
