@@ -37,14 +37,6 @@ def decode(e, sub_key):
     if isinstance(e, str):
         e = bytes(e.encode("ascii"))
 
-    # try:
-    #     forced_version = None
-    #     if e.startswith(b"$"):
-    #         forced_version = 1
-    #         e = e[1:]
-    # except AttributeError:
-    #     raise EncryptedIDDecodeError()
-
     try:
         padding = (3 - len(e) % 3) * b"="
         e = base64.urlsafe_b64decode(e + padding)
@@ -63,9 +55,6 @@ def decode(e, sub_key):
             crc, the_id, _ = struct.unpack(b"<IQI", msg)
         except struct.error:
             raise EncryptedIDDecodeError()
-
-        # if forced_version is not None:
-        #     version = forced_version
 
         try:
             id_str = str(the_id).encode("utf-8")

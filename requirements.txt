@@ -1,2 +1,7 @@
 django>=2.2.24,<3.0.0
 pycryptodomex
+codecov
+pytest
+pytest-cov
+pytest-env
+pytest-django

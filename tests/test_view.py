@@ -1,9 +1,11 @@
+import pytest
 from django.test import Client
 from django.urls import reverse
 
 from tests.testapp.models import Foo
 
 
+@pytest.mark.django_db
 def test_view(db):
     assert db is db
 

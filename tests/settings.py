@@ -15,11 +15,14 @@ DATABASES = {
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
-    "testapp.testapp",
-    "django.contrib.contenttypes"
+    "tests.testapp",
+    "django.contrib.admin",
+    "django.contrib.contenttypes",
+    "django.contrib.auth",
+    "django.contrib.staticfiles"
 )
 
-ROOT_URLCONF = "testapp.urls"
+ROOT_URLCONF = "tests.urls"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
@@ -27,6 +30,7 @@ USE_TZ = True
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": ["django.contrib.auth.context_processors.auth"]
         },

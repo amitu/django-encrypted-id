@@ -1,10 +1,12 @@
 import pytest
 from django.http import Http404
 from django.shortcuts import get_list_or_404, get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
 
 from tests.testapp.models import Bar, Foo, Foo2
 
 
+@pytest.mark.django_db
 def test_model(db):
     assert db is db
 
@@ -15,7 +17,7 @@ def test_model(db):
     assert foo == Foo.objects.get(ekey=foo.ekey)
     assert foo == Foo.objects.filter(ekey=foo.ekey).get()
 
-    foo = Foo2.objects.create(text="hello")
+    foo = Foo2.objects.create(text="hello2")
     assert foo.ekey
     assert foo == Foo2.objects.get_by_ekey(foo.ekey)
     assert foo == Foo2.objects.get_by_ekey_or_404(foo.ekey)
@@ -39,12 +41,12 @@ def test_sub_key(db):
 
     try:
         foo2 = Foo2.objects.get(pk=foo.pk)
-    except Foo2.DoesNotExist:
+    except ObjectDoesNotExist:
         foo2 = Foo2.objects.create(pk=foo.pk, text='hello')
 
     try:
         bar = Bar.objects.get(pk=foo.pk)
-    except Bar.DoesNotExist:
+    except ObjectDoesNotExist:
         bar = Bar.objects.create(pk=foo.pk, text='hello')
 
     assert foo.pk == foo2.pk == bar.pk

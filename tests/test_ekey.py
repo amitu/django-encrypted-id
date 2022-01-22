@@ -5,6 +5,7 @@ from encrypted_id import ekey, get_object_or_404
 from tests.testapp.models import Foo
 
 
+@pytest.mark.django_db
 def test_ekey(db):
     assert db is db
 

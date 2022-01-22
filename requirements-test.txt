@@ -1,6 +1,0 @@
-codecov
-pytest-cov
-pytest-env
-pytest
-pytest-django
-pytest-pep8
