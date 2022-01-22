@@ -5,8 +5,9 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from tests.testapp.models import Bar, Foo, Foo2
 
+pytestmark = pytest.mark.django_db
 
-@pytest.mark.django_db
+
 def test_model(db):
     assert db is db
 

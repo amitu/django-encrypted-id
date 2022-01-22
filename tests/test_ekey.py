@@ -4,8 +4,9 @@ from django.http import Http404
 from encrypted_id import ekey, get_object_or_404
 from tests.testapp.models import Foo
 
+pytestmark = pytest.mark.django_db
 
-@pytest.mark.django_db
+
 def test_ekey(db):
     assert db is db
 

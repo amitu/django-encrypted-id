@@ -4,8 +4,9 @@ from django.urls import reverse
 
 from tests.testapp.models import Foo
 
+pytestmark = pytest.mark.django_db
 
-@pytest.mark.django_db
+
 def test_view(db):
     assert db is db
 
