@@ -5,3 +5,4 @@ pytest
 pytest-cov
 pytest-env
 pytest-django
+pytest-pythonpath
