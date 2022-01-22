@@ -1,14 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import division
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import pytest
 from django.http import Http404
 
 from encrypted_id import ekey, get_object_or_404
-from tapp.models import Foo
+from tests.testapp.models import Foo
 
 
 def test_ekey(db):

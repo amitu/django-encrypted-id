@@ -1,9 +1,9 @@
 from django.views.generic import DetailView
 
-from tapp.models import Foo
+from models import Foo
 
 
 class FooView(DetailView):
     model = Foo
     slug_field = 'ekey'
-    template_name = 'admin/base.html'
+    # template_name = 'admin/base.html'

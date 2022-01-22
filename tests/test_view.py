@@ -1,13 +1,7 @@
-# -*- coding: utf-8 -*-
-from __future__ import division
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
-
-from django.urls import reverse
 from django.test import Client
+from django.urls import reverse
 
-from tapp.models import Foo
+from tests.testapp.models import Foo
 
 
 def test_view(db):

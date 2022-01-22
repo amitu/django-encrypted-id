@@ -1,13 +1,8 @@
-# -*- coding: utf-8 -*-
-from __future__ import division
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
-
-from tapp.models import Bar, Foo, Foo2
-from django.shortcuts import get_list_or_404, get_object_or_404
-from django.http import Http404
 import pytest
+from django.http import Http404
+from django.shortcuts import get_list_or_404, get_object_or_404
+
+from tests.testapp.models import Bar, Foo, Foo2
 
 
 def test_model(db):
