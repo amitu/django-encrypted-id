@@ -15,7 +15,7 @@ class EncryptedIDDecodeError(Exception):
         super(EncryptedIDDecodeError, self).__init__(msg)
 
 
-def encode(the_id, sub_key):
+def encode(the_id, sub_key: str):
     assert 0 <= the_id < 2 ** 64
 
     version = 1
@@ -33,7 +33,7 @@ def encode(the_id, sub_key):
     return eid.decode("utf-8")
 
 
-def decode(e, sub_key):
+def decode(e, sub_key: str):
     if isinstance(e, str):
         e = bytes(e.encode("ascii"))
 

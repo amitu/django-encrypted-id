@@ -7,7 +7,7 @@ class Foo(EncryptedIDModel):
     text = models.TextField()
 
     class Meta:
-        db_table = 'xxx'
+        db_table = "xxx"
 
 
 class Foo2Manager(EncryptedIDManager):
@@ -18,8 +18,8 @@ class Foo2(EncryptedIDModel):
     text = models.TextField()
 
     class Meta:
-        db_table = 'yyy'
-        ek_key = 'xxx'
+        db_table = "yyy"
+        ek_key = "xxx"
 
 
 class Bar(EncryptedIDModel):
