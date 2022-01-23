@@ -1,5 +1,5 @@
 django>=2.2.24,<3.0.0
-pycryptodomex
+pycryptodomex==3.9.8
 codecov
 pytest
 pytest-cov
