@@ -1,29 +1,30 @@
-# -*- coding: utf-8 -*-
-from __future__ import division
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import pytest
 from django.http import Http404
+from django.test import TestCase
 
 from encrypted_id import ekey, get_object_or_404
-from tapp.models import Foo
+from tests.testapp.models import Foo
+
+pytestmark = pytest.mark.django_db
 
 
-def test_ekey(db):
-    assert db is db
+class TestEkey(TestCase):
+    def test_ekey(self):
+        foo = Foo.objects.create(text="asd")
+        assert ekey(foo) == foo.ekey
 
-    foo = Foo.objects.create(text="asd")
-    assert ekey(foo) == foo.ekey
-    assert foo == get_object_or_404(Foo, foo.ekey)
+    def test_ekey_query(self):
+        foo = Foo.objects.create(text="asd")
+        assert foo == Foo.objects.get(ekey=foo.ekey)
 
+    def test_ekey_get_object_or_404(self):
+        foo = Foo.objects.create(text="asd")
+        assert foo == get_object_or_404(model=Foo, ekey=foo.ekey)
 
-def test_allow_none_ekey(db):
-    assert db is db
+    def test_get_object_or_404_raises_404(self):
+        with pytest.raises(Http404):
+            get_object_or_404(model=Foo, ekey=None)
 
-    with pytest.raises(Http404):
-        get_object_or_404(Foo, None)
-
-    with pytest.raises(Foo.DoesNotExist):
-        Foo.objects.get(ekey=None)
+    def test_query_ekey_none_raises_does_not_exist(self):
+        with pytest.raises(Foo.DoesNotExist):
+            Foo.objects.get(ekey=None)

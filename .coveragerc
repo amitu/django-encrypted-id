@@ -1,0 +1,6 @@
+[run]
+omit =
+    *tests/*,
+    venv*/*
+    __init__.py
+    setup.py
