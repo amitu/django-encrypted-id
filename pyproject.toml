@@ -24,6 +24,6 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
-    "django>=3.2.16,<4.0.0",
+    "django>=3.2.17,<4.0.0",
     'pycryptodomex==3.17',
 ]
