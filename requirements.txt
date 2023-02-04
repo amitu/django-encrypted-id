@@ -1,8 +1,2 @@
-django>=2.2.24,<3.0.0
-pycryptodomex==3.9.8
-codecov
-pytest
-pytest-cov
-pytest-env
-pytest-django
-pytest-pythonpath
+django>=3.2.16,<4.0.0
+pycryptodomex==3.17
