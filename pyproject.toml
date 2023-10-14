@@ -10,13 +10,13 @@ packages = ["encrypted_id"]
 
 [project]
 name = "django-encrypted-id"
-version = "0.4.0"
+version = "0.5.0"
 authors = [
     {name = "Fabian Witt"},
 ]
 description = "Encrypted IDs for Django Models"
 readme = "README.rst"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 keywords = ["Django", "Encryption"]
 license = {text = "MIT"}
 classifiers = [
@@ -24,6 +24,6 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 dependencies = [
-    "django>=3.2.17,<4.0.0",
-    'pycryptodomex==3.17',
+    "django>=4.2.6,<5.0.0",
+    'pycryptodomex==3.19.0',
 ]
